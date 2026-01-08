@@ -352,6 +352,11 @@ UMA VEZ ATÉ MORRER`;
             return action.replace(/_/g, ' ');
         }
 
+        function formatLendaName(name) {
+            if (!name) return '';
+            return name.replace(/([a-zà-ÿ])([A-ZÁ-Ý])/g, '$1 $2');
+        }
+
         function buildActionPhrase(action) {
             const actionText = formatAction(action);
             if (!actionText) return '';
@@ -387,6 +392,20 @@ UMA VEZ ATÉ MORRER`;
             return text.charAt(0).toUpperCase() + text.slice(1);
         }
 
+        function escapeRegExp(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function formatLendasInText(text, lendas) {
+            let formatted = text;
+            lendas.forEach((name) => {
+                const display = formatLendaName(name);
+                if (display === name) return;
+                formatted = formatted.replace(new RegExp(escapeRegExp(name), 'g'), display);
+            });
+            return formatted;
+        }
+
         async function getTextEngine() {
             if (mlcEngine) return mlcEngine;
             if (!mlcEnginePromise) {
@@ -404,7 +423,8 @@ UMA VEZ ATÉ MORRER`;
         function buildKnowledgeBasePrompt(kb, numParagraphs, numSentences) {
             const kbJson = JSON.stringify(kb);
             return [
-                "Voce e um gerador de lero-lero galoista.",
+                "Voce e um gerador de lero-lero galoista, com coesao e coerencia.",
+                "Use sua habilidade de redator formado em portugues brasileiro.",
                 `Gere exatamente ${numParagraphs} paragrafos com ${numSentences} frases por paragrafo.`,
                 "Cada frase deve conter pelo menos: um grito_de_guerra, uma legenda e uma acao_do_mascote.",
                 "Quando fizer sentido, inclua um local_sagrado ou um meme_classico.",
@@ -449,8 +469,8 @@ UMA VEZ ATÉ MORRER`;
             state.lastGrito = gritoRaw;
 
             const useAnchorLenda = state.anchorLenda && Math.random() < 0.35;
-            const lenda = useAnchorLenda ? state.anchorLenda : pickDifferent(lendas, state.lastLenda);
-            state.lastLenda = lenda;
+            const lendaRaw = useAnchorLenda ? state.anchorLenda : pickDifferent(lendas, state.lastLenda);
+            state.lastLenda = lendaRaw;
 
             const useAnchorLocal = state.anchorLocal && Math.random() < 0.35;
             const local = useAnchorLocal ? state.anchorLocal : pickDifferent(locais, state.lastLocal);
@@ -459,14 +479,14 @@ UMA VEZ ATÉ MORRER`;
             const acaoRaw = pickDifferent(acoes, state.lastAcao);
             state.lastAcao = acaoRaw;
 
-            const useMeme = memes && memes.length > 0 && Math.random() < 0.2;
+            const useMeme = memes && memes.length > 0 && Math.random() < 0.4;
             const meme = useMeme ? pickDifferent(memes, state.lastMeme) : '';
             state.lastMeme = meme || state.lastMeme;
 
             const data = {
                 grito: stripTrailingPunctuation(gritoRaw),
                 gritoRaw,
-                lenda,
+                lenda: formatLendaName(lendaRaw),
                 acao: buildActionPhrase(acaoRaw),
                 local,
                 meme,
@@ -537,7 +557,8 @@ UMA VEZ ATÉ MORRER`;
                     const nonHinoCount = numParagraphs - Math.floor(numParagraphs / 10);
                     try {
                         const aiText = await gerarComIA(nonHinoCount, numSentences, kb);
-                        aiParagraphs = splitParagraphs(aiText).slice(0, nonHinoCount);
+                        aiParagraphs = splitParagraphs(formatLendasInText(aiText, kb.legendas.items))
+                            .slice(0, nonHinoCount);
                     } catch (error) {
                         console.warn('Falha ao gerar com IA:', error);
                     }

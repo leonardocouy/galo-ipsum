@@ -118,6 +118,11 @@ function formatAction(action) {
   return action.replace(/_/g, ' ');
 }
 
+function formatLendaName(name) {
+  if (!name) return '';
+  return name.replace(/([a-zà-ÿ])([A-ZÁ-Ý])/g, '$1 $2');
+}
+
 function buildActionPhrase(action) {
   const actionText = formatAction(action);
   if (!actionText) return '';
@@ -165,8 +170,8 @@ function generateSentence(knowledgeBase, state) {
   state.lastGrito = gritoRaw;
 
   const useAnchorLenda = state.anchorLenda && Math.random() < 0.35;
-  const lenda = useAnchorLenda ? state.anchorLenda : pickDifferent(lendas, state.lastLenda);
-  state.lastLenda = lenda;
+  const lendaRaw = useAnchorLenda ? state.anchorLenda : pickDifferent(lendas, state.lastLenda);
+  state.lastLenda = lendaRaw;
 
   const useAnchorLocal = state.anchorLocal && Math.random() < 0.35;
   const local = useAnchorLocal ? state.anchorLocal : pickDifferent(locais, state.lastLocal);
@@ -175,14 +180,14 @@ function generateSentence(knowledgeBase, state) {
   const acaoRaw = pickDifferent(acoes, state.lastAcao);
   state.lastAcao = acaoRaw;
 
-  const useMeme = memes && memes.length > 0 && Math.random() < 0.2;
+  const useMeme = memes && memes.length > 0 && Math.random() < 0.4;
   const meme = useMeme ? pickDifferent(memes, state.lastMeme) : '';
   state.lastMeme = meme || state.lastMeme;
 
   const data = {
     grito: stripTrailingPunctuation(gritoRaw),
     gritoRaw,
-    lenda,
+    lenda: formatLendaName(lendaRaw),
     acao: buildActionPhrase(acaoRaw),
     local,
     meme,
