@@ -38,8 +38,13 @@
         }
 
         .rooster {
-            font-size: 4em;
             margin-bottom: 10px;
+        }
+
+        .rooster img {
+            width: 150px;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
         }
 
         .subtitle {
@@ -96,6 +101,15 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button img.btn-logo {
+            width: 30px;
+            height: auto;
         }
 
         button:hover {
@@ -159,8 +173,12 @@
                 font-size: 2em;
             }
 
-            .rooster {
-                font-size: 3em;
+            .rooster img {
+                width: 100px;
+            }
+
+            button img.btn-logo {
+                width: 25px;
             }
         }
     </style>
@@ -168,7 +186,7 @@
 <body>
     <div class="container">
         <header>
-            <div class="rooster">🐓</div>
+            <div class="rooster"><img src="logo.png" alt="Galo Logo"></div>
             <h1>GALO IPSUM</h1>
             <p class="subtitle">Gerador de placeholder text galoista raiz!</p>
         </header>
@@ -188,7 +206,7 @@
                 </select>
             </div>
 
-            <button onclick="generateIpsum()">🐓 GERAR GALO IPSUM!</button>
+            <button onclick="generateIpsum()"><img src="logo.png" alt="Galo" class="btn-logo"> GERAR GALO IPSUM!</button>
         </div>
 
         <div class="output" id="output">
