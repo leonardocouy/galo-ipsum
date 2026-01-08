@@ -210,9 +210,9 @@
                 </select>
             </div>
 
-            <div class="control-group" id="rewrite-group">
+            <div class="control-group">
                 <label for="rewrite">
-                    <input type="checkbox" id="rewrite">
+                    <input type="checkbox" id="rewrite" checked>
                     Gerar com IA
                 </label>
             </div>
@@ -401,31 +401,6 @@ UMA VEZ ATÉ MORRER`;
             return mlcEngine;
         }
 
-        async function hasWebGPU() {
-            if (!navigator.gpu) return false;
-            try {
-                const adapter = await navigator.gpu.requestAdapter();
-                return !!adapter;
-            } catch (error) {
-                return false;
-            }
-        }
-
-        async function initRewriteOption() {
-            const group = document.getElementById('rewrite-group');
-            const checkbox = document.getElementById('rewrite');
-            if (!group || !checkbox) return;
-
-            const supported = await hasWebGPU();
-            if (!supported) {
-                group.style.display = 'none';
-                checkbox.checked = false;
-                return;
-            }
-
-            checkbox.checked = true;
-        }
-
         function buildKnowledgeBasePrompt(kb, numParagraphs, numSentences) {
             const kbJson = JSON.stringify(kb);
             return [
@@ -588,10 +563,6 @@ UMA VEZ ATÉ MORRER`;
         // Carregar knowledge base ao iniciar
         loadKnowledgeBase().catch(error => {
             console.error('Erro ao carregar knowledge base:', error);
-        });
-
-        initRewriteOption().catch(error => {
-            console.warn('Falha ao detectar WebGPU:', error);
         });
 
         window.generateIpsum = generateIpsum;
