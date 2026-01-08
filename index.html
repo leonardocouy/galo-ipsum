@@ -231,11 +231,10 @@
     </div>
 
     <script type="module">
-        import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js";
-
         let knowledgeBase = null;
-        let textGenerator = null;
-        let textGeneratorPromise = null;
+        const MODEL_NAME = "Qwen2-0.5B-Instruct-q4f16_1-MLC";
+        let mlcEngine = null;
+        let mlcEnginePromise = null;
 
         const HINO_GALO = `NÓS SOMOS DO CLUBE ATLÉTICO MINEIRO
 JOGAMOS COM MUITA RAÇA E AMOR
@@ -388,22 +387,39 @@ UMA VEZ ATÉ MORRER`;
             return text.charAt(0).toUpperCase() + text.slice(1);
         }
 
-        async function getTextGenerator() {
-            if (textGenerator) return textGenerator;
-            if (!textGeneratorPromise) {
-                textGeneratorPromise = pipeline("text-generation", "Xenova/distilgpt2");
+        async function getTextEngine() {
+            if (mlcEngine) return mlcEngine;
+            if (!mlcEnginePromise) {
+                mlcEnginePromise = (async () => {
+                    const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+                    return webllm.CreateMLCEngine(MODEL_NAME, {
+                        initProgressCallback: (p) => console.log(p.text || p.progress)
+                    });
+                })();
             }
-            textGenerator = await textGeneratorPromise;
-            return textGenerator;
+            mlcEngine = await mlcEnginePromise;
+            return mlcEngine;
         }
 
         async function embaralhaComSentido(texto) {
-            const prompt = `Reescreva o texto abaixo em pt-BR, mantendo o sentido, trocando a ordem e usando sinônimos:\n${texto}\nVersão reescrita:`;
-            const generator = await getTextGenerator();
-            const out = await generator(prompt, { max_new_tokens: 120, temperature: 0.9 });
-            const generated = out && out[0] ? out[0].generated_text : '';
-            const cleaned = generated.replace(prompt, '').trim();
-            return cleaned || texto;
+            const prompt = [
+                "Voce e um assistente de estilo. Reescreva o texto abaixo",
+                "mantendo coesao e sentido geral, mas trocando ordem das frases,",
+                "sinonimos e pequenas variacoes. Saida em pt-BR.",
+                "",
+                "Texto:",
+                `\"\"\"${texto}\"\"\"`
+            ].join("\n");
+            const engine = await getTextEngine();
+            const res = await engine.chat.completions.create({
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.9,
+                max_tokens: 220
+            });
+            const content = res && res.choices && res.choices[0] && res.choices[0].message
+                ? res.choices[0].message.content
+                : '';
+            return content ? content.trim() : texto;
         }
 
         function generateSentence(kb, state) {
