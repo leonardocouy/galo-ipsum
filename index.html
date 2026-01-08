@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galo Ipsum - Gerador de Placeholder Galoista</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 3px solid #ffffff;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .rooster {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #cccccc;
+            margin-top: 10px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 2px solid #ffffff;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #cccccc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 10px;
+            min-height: 200px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .output p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .output .hino {
+            white-space: pre-line;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #cccccc;
+        }
+
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            color: #999999;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .rooster {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="rooster">🐓</div>
+            <h1>GALO IPSUM</h1>
+            <p class="subtitle">Gerador de placeholder text galoista raiz!</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="paragraphs">Número de Parágrafos:</label>
+                <input type="number" id="paragraphs" min="1" max="50" value="5">
+            </div>
+
+            <div class="control-group">
+                <label for="type">Tamanho dos Parágrafos:</label>
+                <select id="type">
+                    <option value="short">Short (3 sentenças)</option>
+                    <option value="medium" selected>Medium (7 sentenças)</option>
+                    <option value="long">Long (12 sentenças)</option>
+                </select>
+            </div>
+
+            <button onclick="generateIpsum()">🐓 GERAR GALO IPSUM!</button>
+        </div>
+
+        <div class="output" id="output">
+            <p class="loading">Clique no botão acima para gerar seu Galo Ipsum!</p>
+        </div>
+
+        <footer>
+            <p>🐓 Galo Doido - Uma vez Galo, sempre Galo! ⚫⚪</p>
+            <p>Feito com raça e amor pela Massa Atleticana</p>
+        </footer>
+    </div>
+
+    <script>
+        let knowledgeBase = null;
+
+        const HINO_GALO = `NÓS SOMOS DO CLUBE ATLÉTICO MINEIRO
+JOGAMOS COM MUITA RAÇA E AMOR
+VIBRAMOS COM ALEGRIA NAS VITÓRIAS
+CLUBE ATLÉTICO MINEIRO
+GALO FORTE VINGADOR
+
+VENCER, VENCER, VENCER
+ESTE É O NOSSO IDEAL
+HONRAMOS O NOME DE MINAS
+NO CENÁRIO ESPORTIVO MUNDIAL
+
+LUTAR, LUTAR, LUTAR
+PELOS GRAMADOS DO MUNDO PRA VENCER
+CLUBE ATLÉTICO MINEIRO
+UMA VEZ ATÉ MORRER
+
+NÓS SOMOS CAMPEÕES DO GELO
+O NOSSO TIME É IMORTAL
+NÓS SOMOS CAMPEÕES DOS CAMPEÕES
+SOMOS O ORGULHO DO ESPORTE NACIONAL
+
+LUTAR, LUTAR, LUTAR
+COM TODA NOSSA RAÇA PRA VENCER
+CLUBE ATLÉTICO MINEIRO
+UMA VEZ ATÉ MORRER
+CLUBE ATLÉTICO MINEIRO
+UMA VEZ ATÉ MORRER
+
+NÓS SOMOS CAMPEÕES DO GELO
+O NOSSO TIME É IMORTAL
+NÓS SOMOS CAMPEÕES DOS CAMPEÕES
+SOMOS O ORGULHO DO ESPORTE NACIONAL
+
+LUTAR, LUTAR, LUTAR
+COM TODA NOSSA RAÇA PRA VENCER
+CLUBE ATLÉTICO MINEIRO
+UMA VEZ ATÉ MORRER
+CLUBE ATLÉTICO MINEIRO
+UMA VEZ ATÉ MORRER`;
+
+        const PONTUACOES = ['!', '.', '...', '!!'];
+
+        async function loadKnowledgeBase() {
+            if (knowledgeBase) return knowledgeBase;
+
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/leonardocouy/galo-doido/main/galo_knowledge_base.json');
+                knowledgeBase = await response.json();
+                return knowledgeBase;
+            } catch (error) {
+                throw new Error('Erro ao carregar knowledge base: ' + error.message);
+            }
+        }
+
+        function randomPick(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function generateSentence(kb) {
+            const grito = randomPick(kb.gritos_de_guerra.items);
+            const lenda = randomPick(kb.legendas.items);
+            const acao = randomPick(kb.acoes_do_mascote.items);
+            const pontuacao = randomPick(PONTUACOES);
+
+            return `${grito} ${lenda} ${acao}${pontuacao}`;
+        }
+
+        function generateParagraph(type, kb) {
+            const sentenceCounts = {
+                short: 3,
+                medium: 7,
+                long: 12
+            };
+
+            const numSentences = sentenceCounts[type] || sentenceCounts.medium;
+            const sentences = [];
+
+            for (let i = 0; i < numSentences; i++) {
+                sentences.push(generateSentence(kb));
+            }
+
+            return sentences.join(' ');
+        }
+
+        async function generateIpsum() {
+            const output = document.getElementById('output');
+            const paragraphsInput = document.getElementById('paragraphs');
+            const typeInput = document.getElementById('type');
+
+            const numParagraphs = parseInt(paragraphsInput.value);
+            const type = typeInput.value;
+
+            if (isNaN(numParagraphs) || numParagraphs <= 0) {
+                output.innerHTML = '<p class="error">Erro: Digite um número válido de parágrafos!</p>';
+                return;
+            }
+
+            output.innerHTML = '<p class="loading">Gerando seu Galo Ipsum raiz... 🐓</p>';
+
+            try {
+                const kb = await loadKnowledgeBase();
+                let html = '';
+
+                for (let i = 1; i <= numParagraphs; i++) {
+                    if (i % 10 === 0) {
+                        html += `<div class="hino">${HINO_GALO}</div>`;
+                    } else {
+                        const paragraph = generateParagraph(type, kb);
+                        html += `<p>${paragraph}</p>`;
+                    }
+                }
+
+                output.innerHTML = html;
+            } catch (error) {
+                output.innerHTML = `<p class="error">${error.message}</p>`;
+            }
+        }
+
+        // Carregar knowledge base ao iniciar
+        loadKnowledgeBase().catch(error => {
+            console.error('Erro ao carregar knowledge base:', error);
+        });
+    </script>
+</body>
+</html>
