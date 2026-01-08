@@ -250,7 +250,7 @@ UMA VEZ ATÉ MORRER`;
             if (knowledgeBase) return knowledgeBase;
 
             try {
-                const response = await fetch('https://raw.githubusercontent.com/leonardocouy/galo-doido/main/galo_knowledge_base.json');
+                const response = await fetch('galo_knowledge_base.json');
                 knowledgeBase = await response.json();
                 return knowledgeBase;
             } catch (error) {

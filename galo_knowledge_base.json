@@ -1,0 +1,383 @@
+{
+  "metadata": {
+    "titulo": "Galo Doido - Knowledge Base para Framework de Zoeira",
+    "versao": "1.0",
+    "descricao": "Base de conhecimento estruturada da cultura, história e fanatismo do Clube Atlético Mineiro (Galo), focada na personalidade desorganizada e criativa do mascote Galo Doido",
+    "data_compilacao": "2026-01-08",
+    "fontes": ["Redes Sociais", "Fóruns de torcedores", "Vídeos de memes", "História do clube", "Cultura Popular"]
+  },
+  
+  "legendas": {
+    "desc": "Nomes de ídolos históricos e atuais para usar como nomes de variáveis e constantes",
+    "items": [
+      "Reinaldo",
+      "Ronaldinho",
+      "Hulk",
+      "Victor",
+      "DiegoTardelli",
+      "DadáMaravilha",
+      "Toninhocerezo",
+      "PauloIsidoro",
+      "EdérAleixo",
+      "Réver",
+      "Guilherme",
+      "Marques",
+      "JoãoLeite",
+      "Kafunga",
+      "MárioDeCastro",
+      "Oldair",
+      "Guará",
+      "LucasMiranda",
+      "BernardoRomaguera",
+      "Jô"
+    ]
+  },
+
+  "acoes_do_mascote": {
+    "desc": "Ações que o Galo Doido realiza, para usar como nomes de funções e métodos",
+    "items": [
+      "girar_camisa",
+      "bicar_raposa",
+      "entrar_de_carrinho",
+      "subir_no_alambrado",
+      "dançar_descontrolado",
+      "pular_nas_arquibancadas",
+      "correria_bandeira",
+      "fazer_festa_na_entrada",
+      "tirar_foto_com_criança",
+      "abraçar_torcedor_louco",
+      "galopar_no_campo",
+      "bater_asa",
+      "cacarejando_alto",
+      "morder_imaginário",
+      "saltar_na_esplanada",
+      "girar_no_próprio_eixo",
+      "correr_loucamente",
+      "cumprir_torcida_organizada",
+      "fazer_mímico_de_vitória",
+      "arrastrar_no_chão_de_alegria"
+    ]
+  },
+
+  "gritos_de_guerra": {
+    "desc": "Frases curtas e de impacto para usar em logs de sucesso e vitórias",
+    "items": [
+      "Aqui é Galo!",
+      "Eu Acredito!",
+      "Caiu no Horto tá morto!",
+      "Bica Bicudo!",
+      "Vencer, vencer, vencer!",
+      "Nós somos do Galo!",
+      "O Galo é Galo!",
+      "Galo Forte Vingador!",
+      "Raça e Amor!",
+      "Quem ficar parado vai tomar!",
+      "A Massa tá na rua!",
+      "Galo na veia!",
+      "Não é impossível!",
+      "Galo nunca desiste!",
+      "13 é Galo!",
+      "Corte Vingador!",
+      "Massa Atleticana presente!",
+      "Viver é ganhar!",
+      "Aqui é Galo, meu filho!",
+      "Ligado na vitória!"
+    ]
+  },
+
+  "zoeira_rivais": {
+    "desc": "Frases provocativas contra rivais (Cruzeiro com Série B e Maria/Zezé, Flamengo com arbitragem e vento) para usar em mensagens de erro",
+    "items": [
+      "Fala Zezé, bom dia cara",
+      "O som sumiu",
+      "Vi no retrovisor",
+      "José Roberto Wright não compilou esse código",
+      "Anelka é do Galo",
+      "Caiu pro B de novo",
+      "Arerê arerê arerê (risos da Série B)",
+      "Cruzeiro vai jogar a série BBBBBBBBB",
+      "Nota de Repúdio contra esse erro",
+      "Você tremeu?",
+      "Aqui é Galo, raposa fica pra trás",
+      "O Cruzeiro nunca leva",
+      "Flamengo com vento não compila",
+      "Arbitragem rubro-negra no código",
+      "Fé foi embora do servidor",
+      "Série B forever",
+      "Lugar de galo é ganhando",
+      "Maria tá te esperando",
+      "Chupa rival",
+      "Melhor cê desistir agora"
+    ]
+  },
+
+  "estados_booleanos": {
+    "desc": "Termos para substituir True/False (vitória/derrota, bom/ruim) com toque galoista",
+    "true_equivalents": [
+      "GaloGanhando",
+      "MassaDoGalo",
+      "MilagreDoHorto",
+      "VitóriaAlfajori",
+      "EuAcreditoVerdade",
+      "CaiuNoHortoMorreu",
+      "BicaVencedora",
+      "RaçaGaloista",
+      "ForçaDaFé",
+      "LibertagaloVerdade",
+      "VenBicaCa",
+      "AlambradoTemporada",
+      "BandeiraNosOmbros",
+      "LouçuraCampeã",
+      "DesconfiadoDáFé"
+    ],
+    "false_equivalents": [
+      "JuizLadrão",
+      "CaiuPraBSérie",
+      "GolDoAdversário",
+      "RalóDePênalti",
+      "ArbitragemRubraNegra",
+      "WindSimuladorFlamengo",
+      "MilagreNãoConhecido",
+      "FéAbandonouoCampo",
+      "DadoVira",
+      "VendasNosOlhos",
+      "ArbitramgemContada",
+      "LuzApagou",
+      "CruzeiroPerdeuDeNovo",
+      "CantoDoGavoFalso",
+      "LoucuraQueNãoFunciona"
+    ]
+  },
+
+  "locais_sagrados": {
+    "desc": "Estádios e locais históricos do Atlético Mineiro",
+    "items": [
+      "Mineirão",
+      "Independência",
+      "Arena MRV",
+      "Sede de Lourdes",
+      "Praça Sete",
+      "Serra",
+      "Bar do Salomão",
+      "Horto",
+      "Bairro Califórnia",
+      "Pampulha",
+      "Gigante da Pampulha",
+      "Alambrado Sagrado",
+      "Esplanada MRV",
+      "Centro de BH",
+      "Estádio Raimundo Sampaio",
+      "Campo do Mineirão",
+      "Arredores da Arena",
+      "Almoxarifado da Torcida",
+      "Ninho da Massa",
+      "Corte Sagrado"
+    ]
+  },
+
+  "memes_classicos": {
+    "desc": "Memes clássicos e virais da torcida do Galo",
+    "items": [
+      "Anelka é do Galo",
+      "Nota de Repúdio",
+      "O Galo ganhou",
+      "Caiu no Horto tá morto",
+      "Fala Zezé bom dia",
+      "13 é sempre galo",
+      "Milagre do Horto",
+      "Galo Doido era loucura mesmo",
+      "Arerê arerê (Série B do Cruzeiro)",
+      "O som sumiu",
+      "Vi no retrovisor",
+      "José Roberto Wright não compilou",
+      "Cruzeiro na série B de novo",
+      "A fé abandonou o campo",
+      "Lugar de galo é ganhando",
+      "Galinha pintadinha virou vice",
+      "Você tremeu?",
+      "Aqui é Galo, raposa fica pra trás",
+      "Flamengo com vento não compila",
+      "Maria tá esperando"
+    ]
+  },
+
+  "personalidade_galo_doido": {
+    "desc": "Características e traços da personalidade do mascote",
+    "traits": [
+      "Desorganizado",
+      "Apaixonado",
+      "Loucamente fanático",
+      "Impulsivo",
+      "Brincalhão",
+      "Guerreiro",
+      "Nunca desiste",
+      "Acredita no impossível",
+      "Faz paixões",
+      "Grita alto",
+      "Salta alto",
+      "Corre loucamente",
+      "Abraça quem encontra",
+      "Tira foto com todos",
+      "Dança descontrolado",
+      "Carrega bandeira com orgulho",
+      "Bica imagináriamente a raposa",
+      "Grita de alegria",
+      "Sente cada jogo",
+      "Não conhece derrota"
+    ]
+  },
+
+  "história_do_galo_doido": {
+    "desc": "Trajetória histórica do mascote Galo Doido",
+    "timeline": [
+      {
+        "ano": "1930s",
+        "evento": "Um galo preto e branco dominava as rinhas em BH, inspirando ligação com o Atlético"
+      },
+      {
+        "ano": "1945",
+        "evento": "Chargista Fernando Pieruccetti cria o desenho do Galo para os mascotes de BH"
+      },
+      {
+        "ano": "1950s",
+        "evento": "Zé do Monte entra em campo com galo de verdade no colo, popularizando o símbolo"
+      },
+      {
+        "ano": "1976",
+        "evento": "Galo entra no gramado do Mineirão acompanhando jogadores"
+      },
+      {
+        "ano": "2001-2008",
+        "evento": "Dudu cria a expressão 'Galo Doido' no programa Alterosa Esporte"
+      },
+      {
+        "ano": "2005",
+        "evento": "Mascote é modernizado em formato de super-herói"
+      },
+      {
+        "ano": "2005+",
+        "evento": "Torcida batiza definitivamente como 'Galo Doido'"
+      },
+      {
+        "ano": "2024+",
+        "evento": "Instituto Galo realiza 1.186 ações sociais com o mascote"
+      }
+    ]
+  },
+
+  "expressões_regionais": {
+    "desc": "Expressões típicas da torcida galoista",
+    "items": [
+      "É Galo!",
+      "Tá galoando!",
+      "Que loucura galoista!",
+      "Atleticano até a morte",
+      "Galo na veia",
+      "Raça galoista",
+      "Masa Atleticana",
+      "Corte Vingador",
+      "Bica bicudo",
+      "Cacarejo",
+      "Galope",
+      "Asa bate",
+      "Pena arrepiada",
+      "Grito de guerra",
+      "Louçura atleticana",
+      "Desespero galoista",
+      "Crença impossível",
+      "Fé cega",
+      "Sofrimento sagrado",
+      "Alegria furiosa"
+    ]
+  },
+
+  "dados_historicos": {
+    "desc": "Dados importantes da história do Atlético Mineiro",
+    "fundacao": "25 de março de 1908",
+    "maior_idolo": "Reinaldo (255 gols em 475 jogos)",
+    "conquistas_maiores": [
+      "Campeonato Brasileiro 1971",
+      "Campeonato Brasileiro 2021",
+      "Copa Libertadores 2013",
+      "Múltiplos Campeonatos Mineiros"
+    ],
+    "numeros_sagrados": [
+      13,
+      2013,
+      1971,
+      255
+    ],
+    "idolos_imortais": [
+      "Reinaldo (maior artilheiro)",
+      "Ronaldinho Gaúcho (Libertadores 2013)",
+      "Victor (São Victor do Horto - Milagre)",
+      "Hulk (8 títulos em BH)",
+      "Dadá Maravilha (folclórico e artilheiro)",
+      "Diego Tardelli",
+      "Réver (capitão histórico)"
+    ]
+  },
+
+  "emojis_galoistas": {
+    "desc": "Emojis e símbolos visuais associados ao Galo",
+    "items": [
+      "🐓 (galo/galinha)",
+      "⚫ (preto)",
+      "⚪ (branco)",
+      "🖤 (coração preto)",
+      "🤍 (coração branco)",
+      "⚽ (bola de futebol)",
+      "🔥 (fogo/paixão)",
+      "💪 (força)",
+      "🎊 (celebração)",
+      "🎉 (festa)",
+      "🏆 (troféu)",
+      "👑 (coroa/realeza)",
+      "🚩 (bandeira)",
+      "🛡️ (escudo)",
+      "🗡️ (espada)"
+    ]
+  },
+
+  "erros_memoraveis": {
+    "desc": "Momentos de frustração memoráveis para usar em mensagens de erro dramáticas",
+    "items": [
+      "Vai cair no Horto de novo",
+      "A fé foi embora",
+      "Milagre virou maldição",
+      "Arbitragem contra",
+      "Série B se aproximando",
+      "Vice definitivo",
+      "Pênalti que não era",
+      "Gol invalidado",
+      "Vento de Flamengo",
+      "Som sumiu antes do gol",
+      "Luz apagou no estadio",
+      "Campo molhado demais",
+      "Bola sumiu do gramado",
+      "Placar invertido",
+      "Juiz perdeu a bola",
+      "Torcida entrou em campo",
+      "Camisa riscou",
+      "Número errado na camisa",
+      "Data do jogo mudou",
+      "Hora mudou sem avisar"
+    ]
+  },
+
+  "código_galoista": {
+    "desc": "Princípios filosóficos do framework Galo Doido",
+    "mandamentos": [
+      "Sempre acreditar, mesmo derrotado",
+      "Nunca desistir enquanto houver minuto",
+      "Raça e amor acima de tudo",
+      "A massa atleticana é soberana",
+      "13 é número sagrado",
+      "O Horto é terra mãe",
+      "Galo não se entrega",
+      "Vencer com alegria é arte",
+      "Perder duói mas a fé permanece",
+      "Zoar o rival é liturgia"
+    ]
+  }
+}
