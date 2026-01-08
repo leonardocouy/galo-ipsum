@@ -72,6 +72,10 @@
             font-size: 1.1em;
         }
 
+        label input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
         input[type="number"],
         select {
             width: 100%;
@@ -206,6 +210,13 @@
                 </select>
             </div>
 
+            <div class="control-group">
+                <label for="rewrite">
+                    <input type="checkbox" id="rewrite">
+                    Reescrever com IA (beta - mais lento)
+                </label>
+            </div>
+
             <button onclick="generateIpsum()"><img src="logo.png" alt="Galo" class="btn-logo"> GERAR GALO IPSUM!</button>
         </div>
 
@@ -219,8 +230,12 @@
         </footer>
     </div>
 
-    <script>
+    <script type="module">
+        import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js";
+
         let knowledgeBase = null;
+        let textGenerator = null;
+        let textGeneratorPromise = null;
 
         const HINO_GALO = `NÓS SOMOS DO CLUBE ATLÉTICO MINEIRO
 JOGAMOS COM MUITA RAÇA E AMOR
@@ -373,6 +388,24 @@ UMA VEZ ATÉ MORRER`;
             return text.charAt(0).toUpperCase() + text.slice(1);
         }
 
+        async function getTextGenerator() {
+            if (textGenerator) return textGenerator;
+            if (!textGeneratorPromise) {
+                textGeneratorPromise = pipeline("text-generation", "Xenova/distilgpt2");
+            }
+            textGenerator = await textGeneratorPromise;
+            return textGenerator;
+        }
+
+        async function embaralhaComSentido(texto) {
+            const prompt = `Reescreva o texto abaixo em pt-BR, mantendo o sentido, trocando a ordem e usando sinônimos:\n${texto}\nVersão reescrita:`;
+            const generator = await getTextGenerator();
+            const out = await generator(prompt, { max_new_tokens: 120, temperature: 0.9 });
+            const generated = out && out[0] ? out[0].generated_text : '';
+            const cleaned = generated.replace(prompt, '').trim();
+            return cleaned || texto;
+        }
+
         function generateSentence(kb, state) {
             const gritos = kb.gritos_de_guerra.items;
             const lendas = kb.legendas.items;
@@ -442,16 +475,20 @@ UMA VEZ ATÉ MORRER`;
             const output = document.getElementById('output');
             const paragraphsInput = document.getElementById('paragraphs');
             const typeInput = document.getElementById('type');
+            const rewriteInput = document.getElementById('rewrite');
 
             const numParagraphs = parseInt(paragraphsInput.value);
             const type = typeInput.value;
+            const shouldRewrite = rewriteInput ? rewriteInput.checked : false;
 
             if (isNaN(numParagraphs) || numParagraphs <= 0) {
                 output.innerHTML = '<p class="error">Erro: Digite um número válido de parágrafos!</p>';
                 return;
             }
 
-            output.innerHTML = '<p class="loading">Gerando seu Galo Ipsum raiz... 🐓</p>';
+            output.innerHTML = shouldRewrite
+                ? '<p class="loading">Carregando o modelo e refinando o texto... 🐓</p>'
+                : '<p class="loading">Gerando seu Galo Ipsum raiz... 🐓</p>';
 
             try {
                 const kb = await loadKnowledgeBase();
@@ -461,7 +498,14 @@ UMA VEZ ATÉ MORRER`;
                     if (i % 10 === 0) {
                         html += `<div class="hino">${HINO_GALO}</div>`;
                     } else {
-                        const paragraph = generateParagraph(type, kb);
+                        let paragraph = generateParagraph(type, kb);
+                        if (shouldRewrite) {
+                            try {
+                                paragraph = await embaralhaComSentido(paragraph);
+                            } catch (error) {
+                                console.warn('Falha ao reescrever com IA:', error);
+                            }
+                        }
                         html += `<p>${paragraph}</p>`;
                     }
                 }
@@ -476,6 +520,8 @@ UMA VEZ ATÉ MORRER`;
         loadKnowledgeBase().catch(error => {
             console.error('Erro ao carregar knowledge base:', error);
         });
+
+        window.generateIpsum = generateIpsum;
     </script>
 </body>
 </html>
