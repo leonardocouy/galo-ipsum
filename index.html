@@ -210,10 +210,10 @@
                 </select>
             </div>
 
-            <div class="control-group">
+            <div class="control-group" id="rewrite-group">
                 <label for="rewrite">
                     <input type="checkbox" id="rewrite">
-                    Reescrever com IA (beta - mais lento)
+                    Gerar com IA
                 </label>
             </div>
 
@@ -401,25 +401,66 @@ UMA VEZ ATÉ MORRER`;
             return mlcEngine;
         }
 
-        async function embaralhaComSentido(texto) {
-            const prompt = [
-                "Voce e um assistente de estilo. Reescreva o texto abaixo",
-                "mantendo coesao e sentido geral, mas trocando ordem das frases,",
-                "sinonimos e pequenas variacoes. Saida em pt-BR.",
-                "",
-                "Texto:",
-                `\"\"\"${texto}\"\"\"`
+        async function hasWebGPU() {
+            if (!navigator.gpu) return false;
+            try {
+                const adapter = await navigator.gpu.requestAdapter();
+                return !!adapter;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function initRewriteOption() {
+            const group = document.getElementById('rewrite-group');
+            const checkbox = document.getElementById('rewrite');
+            if (!group || !checkbox) return;
+
+            const supported = await hasWebGPU();
+            if (!supported) {
+                group.style.display = 'none';
+                checkbox.checked = false;
+                return;
+            }
+
+            checkbox.checked = true;
+        }
+
+        function buildKnowledgeBasePrompt(kb, numParagraphs, numSentences) {
+            const kbJson = JSON.stringify(kb);
+            return [
+                "Voce e um gerador de lero-lero galoista.",
+                `Gere exatamente ${numParagraphs} paragrafos com ${numSentences} frases por paragrafo.`,
+                "Cada frase deve conter pelo menos: um grito_de_guerra, uma legenda e uma acao_do_mascote.",
+                "Quando fizer sentido, inclua um local_sagrado ou um meme_classico.",
+                "Use APENAS termos presentes na base de conhecimento para nomes, acoes, gritos, memes e locais.",
+                "Conectores simples em pt-BR estao liberados (ex: 'e', 'mas', 'quando', 'no', 'na', 'com').",
+                "Nao invente nomes, fatos ou referencias fora da base.",
+                "Separe paragrafos com uma linha em branco e nao adicione explicacoes.",
+                "Base de conhecimento (JSON):",
+                kbJson
             ].join("\n");
+        }
+
+        async function gerarComIA(numParagraphs, numSentences, kb) {
+            const prompt = buildKnowledgeBasePrompt(kb, numParagraphs, numSentences);
             const engine = await getTextEngine();
             const res = await engine.chat.completions.create({
                 messages: [{ role: "user", content: prompt }],
                 temperature: 0.9,
-                max_tokens: 220
+                max_tokens: Math.min(220 * numParagraphs, 1200)
             });
             const content = res && res.choices && res.choices[0] && res.choices[0].message
                 ? res.choices[0].message.content
                 : '';
-            return content ? content.trim() : texto;
+            return content ? content.trim() : '';
+        }
+
+        function splitParagraphs(text) {
+            return text
+                .split(/\n\s*\n+/)
+                .map((p) => p.trim())
+                .filter(Boolean);
         }
 
         function generateSentence(kb, state) {
@@ -496,6 +537,12 @@ UMA VEZ ATÉ MORRER`;
             const numParagraphs = parseInt(paragraphsInput.value);
             const type = typeInput.value;
             const shouldRewrite = rewriteInput ? rewriteInput.checked : false;
+            const sentenceCounts = {
+                short: 3,
+                medium: 7,
+                long: 12
+            };
+            const numSentences = sentenceCounts[type] || sentenceCounts.medium;
 
             if (isNaN(numParagraphs) || numParagraphs <= 0) {
                 output.innerHTML = '<p class="error">Erro: Digite um número válido de parágrafos!</p>';
@@ -503,25 +550,31 @@ UMA VEZ ATÉ MORRER`;
             }
 
             output.innerHTML = shouldRewrite
-                ? '<p class="loading">Carregando o modelo e refinando o texto... 🐓</p>'
+                ? '<p class="loading">Carregando o modelo e gerando o texto... 🐓</p>'
                 : '<p class="loading">Gerando seu Galo Ipsum raiz... 🐓</p>';
 
             try {
                 const kb = await loadKnowledgeBase();
                 let html = '';
+                let aiParagraphs = [];
+
+                if (shouldRewrite) {
+                    const nonHinoCount = numParagraphs - Math.floor(numParagraphs / 10);
+                    try {
+                        const aiText = await gerarComIA(nonHinoCount, numSentences, kb);
+                        aiParagraphs = splitParagraphs(aiText).slice(0, nonHinoCount);
+                    } catch (error) {
+                        console.warn('Falha ao gerar com IA:', error);
+                    }
+                }
 
                 for (let i = 1; i <= numParagraphs; i++) {
                     if (i % 10 === 0) {
                         html += `<div class="hino">${HINO_GALO}</div>`;
                     } else {
-                        let paragraph = generateParagraph(type, kb);
-                        if (shouldRewrite) {
-                            try {
-                                paragraph = await embaralhaComSentido(paragraph);
-                            } catch (error) {
-                                console.warn('Falha ao reescrever com IA:', error);
-                            }
-                        }
+                        let paragraph = aiParagraphs.length > 0
+                            ? aiParagraphs.shift()
+                            : generateParagraph(type, kb);
                         html += `<p>${paragraph}</p>`;
                     }
                 }
@@ -535,6 +588,10 @@ UMA VEZ ATÉ MORRER`;
         // Carregar knowledge base ao iniciar
         loadKnowledgeBase().catch(error => {
             console.error('Erro ao carregar knowledge base:', error);
+        });
+
+        initRewriteOption().catch(error => {
+            console.warn('Falha ao detectar WebGPU:', error);
         });
 
         window.generateIpsum = generateIpsum;
