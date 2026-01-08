@@ -47,6 +47,41 @@ UMA VEZ ATÉ MORRER`;
 // Pontuações possíveis
 const PONTUACOES = ['!', '.', '...', '!!'];
 
+const VERBOS_ACAO = [
+  'vai',
+  'resolve',
+  'parte para',
+  'corre para',
+  'chega para',
+  'dispara para'
+];
+
+const SENTENCE_TEMPLATES = [
+  {
+    build: (d) => `${d.grito} ${d.lenda} ${d.acao} ${localComArtigo(d.local)}${d.pont}`
+  },
+  {
+    build: (d) =>
+      `${capitalize(localComArtigo(d.local))}, ${d.lenda} ${d.acao} e a Massa responde: "${d.grito}"${d.pont}`
+  },
+  {
+    build: (d) =>
+      `Quando ${d.lenda} ${d.acao}, ${d.grito} ecoa ${localComArtigo(d.local)}${d.pont}`
+  },
+  {
+    build: (d) => `${d.lenda} ${d.acao} - ${d.grito}${d.pont}`
+  },
+  {
+    build: (d) =>
+      `Entre um canto e outro, "${d.meme}". ${d.lenda} ${d.acao} ${localComArtigo(d.local)}${d.pont}`,
+    requiresMeme: true
+  },
+  {
+    build: (d) =>
+      `${capitalize(localComArtigo(d.local))} a Massa puxa o coro: ${d.grito}. ${d.lenda} ${d.acao}${d.pont}`
+  }
+];
+
 // Função para ler e parsear o knowledge base
 function loadKnowledgeBase() {
   const knowledgeBasePath = path.join(__dirname, '../galo_knowledge_base.json');
@@ -59,14 +94,103 @@ function randomPick(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-// Função para gerar uma sentença
-function generateSentence(knowledgeBase) {
-  const grito = randomPick(knowledgeBase.gritos_de_guerra.items);
-  const lenda = randomPick(knowledgeBase.legendas.items);
-  const acao = randomPick(knowledgeBase.acoes_do_mascote.items);
-  const pontuacao = randomPick(PONTUACOES);
+function pickDifferent(array, lastValue) {
+  if (!array || array.length === 0) return '';
+  if (!lastValue || array.length === 1) return randomPick(array);
 
-  return `${grito} ${lenda} ${acao}${pontuacao}`;
+  let pick = randomPick(array);
+  let tries = 0;
+  while (pick === lastValue && tries < 5) {
+    pick = randomPick(array);
+    tries += 1;
+  }
+
+  return pick;
+}
+
+function stripTrailingPunctuation(text) {
+  if (!text) return '';
+  return text.replace(/[.!?]+$/, '');
+}
+
+function formatAction(action) {
+  if (!action) return '';
+  return action.replace(/_/g, ' ');
+}
+
+function buildActionPhrase(action) {
+  const actionText = formatAction(action);
+  if (!actionText) return '';
+
+  if (actionText.endsWith('ando') || actionText.endsWith('endo') || actionText.endsWith('indo')) {
+    return `tá ${actionText}`;
+  }
+
+  return `${randomPick(VERBOS_ACAO)} ${actionText}`;
+}
+
+function localComArtigo(local) {
+  if (!local) return '';
+  const lower = local.toLowerCase();
+  if (
+    lower.startsWith('arena') ||
+    lower.startsWith('sede') ||
+    lower.startsWith('praça') ||
+    lower.startsWith('serra') ||
+    lower.startsWith('esplanada') ||
+    lower.startsWith('pampulha')
+  ) {
+    return `na ${local}`;
+  }
+  if (lower.startsWith('arredores')) {
+    return `nos ${local}`;
+  }
+  return `no ${local}`;
+}
+
+function capitalize(text) {
+  if (!text) return '';
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+// Função para gerar uma sentença
+function generateSentence(knowledgeBase, state) {
+  const gritos = knowledgeBase.gritos_de_guerra.items;
+  const lendas = knowledgeBase.legendas.items;
+  const acoes = knowledgeBase.acoes_do_mascote.items;
+  const locais = knowledgeBase.locais_sagrados ? knowledgeBase.locais_sagrados.items : ['Horto'];
+  const memes = knowledgeBase.memes_classicos ? knowledgeBase.memes_classicos.items : [];
+
+  const gritoRaw = pickDifferent(gritos, state.lastGrito);
+  state.lastGrito = gritoRaw;
+
+  const useAnchorLenda = state.anchorLenda && Math.random() < 0.35;
+  const lenda = useAnchorLenda ? state.anchorLenda : pickDifferent(lendas, state.lastLenda);
+  state.lastLenda = lenda;
+
+  const useAnchorLocal = state.anchorLocal && Math.random() < 0.35;
+  const local = useAnchorLocal ? state.anchorLocal : pickDifferent(locais, state.lastLocal);
+  state.lastLocal = local;
+
+  const acaoRaw = pickDifferent(acoes, state.lastAcao);
+  state.lastAcao = acaoRaw;
+
+  const useMeme = memes && memes.length > 0 && Math.random() < 0.2;
+  const meme = useMeme ? pickDifferent(memes, state.lastMeme) : '';
+  state.lastMeme = meme || state.lastMeme;
+
+  const data = {
+    grito: stripTrailingPunctuation(gritoRaw),
+    gritoRaw,
+    lenda,
+    acao: buildActionPhrase(acaoRaw),
+    local,
+    meme,
+    pont: randomPick(PONTUACOES)
+  };
+
+  const availableTemplates = SENTENCE_TEMPLATES.filter((t) => !t.requiresMeme || data.meme);
+  return randomPick(availableTemplates).build(data);
 }
 
 // Função para gerar um parágrafo
@@ -79,9 +203,18 @@ function generateParagraph(type, knowledgeBase) {
 
   const numSentences = sentenceCounts[type] || sentenceCounts.medium;
   const sentences = [];
+  const state = {
+    lastGrito: null,
+    lastLenda: null,
+    lastAcao: null,
+    lastLocal: null,
+    lastMeme: null,
+    anchorLenda: randomPick(knowledgeBase.legendas.items),
+    anchorLocal: randomPick(knowledgeBase.locais_sagrados ? knowledgeBase.locais_sagrados.items : ['Horto'])
+  };
 
   for (let i = 0; i < numSentences; i++) {
-    sentences.push(generateSentence(knowledgeBase));
+    sentences.push(generateSentence(knowledgeBase, state));
   }
 
   return sentences.join(' ');
